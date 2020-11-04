@@ -1,7 +1,7 @@
-public class Molecule {
-    private Atom atomOne, atomTwo;
-    private int positionX, positionY;
+import java.util.Random;
 
+public class Molecule extends Element implements Runnable{
+    private Atom atomOne, atomTwo;
 
     public Molecule(Atom atomOne, Atom atomTwo, int positionX, int positionY) {
         this.atomOne = atomOne;
@@ -10,11 +10,14 @@ public class Molecule {
         this.positionY = positionY;
     }
 
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
+    public void changePosition(int size) {
+        Random rand = new Random();
+        positionX = rand.nextInt(size);
+        positionY = rand.nextInt(size);
     }
 
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
+    @Override
+    public void run() {
+
     }
 }
