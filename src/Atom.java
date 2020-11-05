@@ -27,6 +27,6 @@ public class Atom extends Element implements Runnable{
 
     @Override
     public void run() {
-
+        MapHelper.operate(this);
     }
 }

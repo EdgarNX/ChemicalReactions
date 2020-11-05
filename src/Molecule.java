@@ -16,8 +16,12 @@ public class Molecule extends Element implements Runnable{
         positionY = rand.nextInt(size);
     }
 
+    public String getName() {
+        return atomOne.getName() + atomTwo.getName();
+    }
+
     @Override
     public void run() {
-
+        MapHelper.operate(this);
     }
 }

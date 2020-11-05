@@ -11,17 +11,17 @@ public class Map {
         grid = new Object[size][size];
         for(int i=0;i<size;i++) {
             for (int j = 0; j < size; j++)
-                grid[i][j] = ' ';
+                grid[i][j] = '_';
         }
     }
 
     public boolean verifyIfSlotIsFree(int x, int y) {
-        if(grid[x][y].equals(' '))
+        if(grid[x][y].equals('_'))
             return true;
         return false;
     }
 
-    public void slotSetter(String value, int x, int y) {
+    public synchronized void slotSetter(String value, int x, int y) {
         grid[x][y] = value;
     }
 
@@ -33,9 +33,17 @@ public class Map {
         return size;
     }
 
-    public void addEntry(Atom atom) {
-        grid[atom.getPositionX()][atom.getPositionY()] = atom.getName();
+    public synchronized void addEntry(Element element) {
+        grid[element.getPositionX()][element.getPositionY()] = element.getName();
     }
 
-    //metoda pt printare
+    public void printMap() {
+        for(int i=0;i<size;i++) {
+            for (int j = 0; j < size; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("--------------------------------------------");
+    }
 }
