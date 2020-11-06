@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     public static void main(String[] args){
@@ -24,16 +26,24 @@ public class Main {
 
         Map map = new Map(4);
 
-        MapHelper mapHelper = new MapHelper(elements,map);
+        Lock[][] locks = new Lock[4][4];
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++) {
+                locks[i][j] = new ReentrantLock();
+            }
 
-        map.printMap();
+        MapHelper mapHelper = new MapHelper(elements,map,locks);
 
+       // map.printMap();
         for (int i=0; i<5; i++) {
             map.addEntry(((Atom) (elements.get(i))));
+        }
+        map.printMap();
+        for (int i=0; i<5; i++) {
+            //map.addEntry(((Atom) (elements.get(i))));
             t[i] = new Thread(elements.get(i));
             t[i].start();
         }
-        //map.printMap();
         try {
             for (int i=0; i<5; i++) {
                 t[i].join();
@@ -44,5 +54,8 @@ public class Main {
 
         map.printMap();
 
+        for (Element e : elements) {
+            System.out.println(e.getName() + " " + e.getPositionX() + " " + e.getPositionY());
+        }
     }
 }
