@@ -19,12 +19,6 @@ public class Atom extends Element implements Runnable{
         return valence;
     }
 
-    public void changePosition(int size) {
-        Random rand = new Random();
-        positionX = rand.nextInt(size);
-        positionY = rand.nextInt(size);
-    }
-
     @Override
     public void run() {
         MapHelper.operate(this);

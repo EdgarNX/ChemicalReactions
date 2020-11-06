@@ -10,12 +10,6 @@ public class Molecule extends Element implements Runnable{
         this.positionY = positionY;
     }
 
-    public void changePosition(int size) {
-        Random rand = new Random();
-        positionX = rand.nextInt(size);
-        positionY = rand.nextInt(size);
-    }
-
     public String getName() {
         return atomOne.getName() + atomTwo.getName();
     }

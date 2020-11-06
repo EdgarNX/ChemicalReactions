@@ -1,7 +1,6 @@
 public abstract class Element  implements Runnable{
     protected int positionX;
     protected int positionY;
-    public abstract void changePosition(int size);
 
     public abstract String getName();
 
