@@ -23,15 +23,15 @@ public class Main {
         elements.add( new Atom("B",2,1,3));
         elements.add( new Atom("Br",2,2,1));
 
-        Map map = new Map(5);
+        Map map = Map.getInstance(4);
 
-        Lock[][] locks = new Lock[5][5];
-        for (int i = 0; i < 5; i++)
-            for (int j = 0; j < 5; j++) {
+        Lock[][] locks = new Lock[4][4];
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++) {
                 locks[i][j] = new ReentrantLock();
             }
 
-        MapHelper mapHelper = new MapHelper(elements,map,locks);
+        MapHelper mapHelper = MapHelper.getInstance(elements,map,locks);
 
         for (int i=0; i<13; i++) {
             map.addEntry(( (elements.get(i))));

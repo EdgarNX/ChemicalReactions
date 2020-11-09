@@ -5,14 +5,23 @@ import java.util.ArrayList;
 public class Map {
     private Object[][] grid;
     private int size;
+    private static Map single_instance = null;
 
-    public Map(int size) {
+    private Map(int size) {
         this.size = size;
         grid = new Object[size][size];
         for(int i=0;i<size;i++) {
             for (int j = 0; j < size; j++)
                 grid[i][j] = "_";
         }
+    }
+
+    public static Map getInstance(int size)
+    {
+        if (single_instance == null)
+            single_instance = new Map(size);
+
+        return single_instance;
     }
 
     public boolean verifyIfSlotIsFree(int x, int y) {
