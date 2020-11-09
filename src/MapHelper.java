@@ -18,6 +18,8 @@ public class MapHelper {
     }
 //map.atomGetter(element.getPositionX(),element.getPositionY())
     public static void operate(Element element) {
+        int oldPositionX = element.getPositionX();
+        int oldPositionY = element.getPositionY();
 
         Random rand = new Random();
         int newpositionX = rand.nextInt(map.getSize());
@@ -29,15 +31,14 @@ public class MapHelper {
                 if (!map.verifyIfSlotIsFree(newpositionX, newpositionY)) {
                     if (element instanceof Atom) {
                         for (Element e : copyElements) { //aici ar putea interveni o alta problema de concurenta
-                            if (e.getPositionX() == newpositionX && e.getPositionY() == newpositionY) {
+                            if (e.getPositionX() == newpositionX && e.getPositionY() == newpositionY && !(e.getName().equals(element.getName()))) {
                                 if (e instanceof Atom) {
                                     if (((Atom) element).getValence() + ((Atom) e).getValence() == 8) {
-                                        Molecule newMolecule = new Molecule(((Atom) element), ((Atom) e), element.getPositionX(), element.getPositionY());
+                                        Molecule newMolecule = new Molecule(((Atom) element), ((Atom) e), e.getPositionX(), e.getPositionY());
+                                        elements.remove(e);
+                                        elements.remove(element);
                                         elements.add(newMolecule);
-                                        elements.remove(((Atom) e));
-                                        elements.remove(((Atom) element));
                                         map.slotSetter("_", element.getPositionX(), element.getPositionY());
-                                        map.slotSetter("_", e.getPositionX(), e.getPositionY());
                                         map.addEntry(newMolecule);
                                     }
                                 }
@@ -47,14 +48,14 @@ public class MapHelper {
                 } else {
                     map.slotSetter("_", element.getPositionX(), element.getPositionY());
                     element.setPositionX(newpositionX);
-                    element.setPositionX(newpositionY);
+                    element.setPositionY(newpositionY);
                     map.addEntry(element);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 mapLocker[newpositionX][newpositionY].unlock();
-                mapLocker[element.getPositionX()][element.getPositionY()].unlock();
+                mapLocker[oldPositionX][oldPositionY].unlock();
             }
         }
 
