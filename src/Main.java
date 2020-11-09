@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     public static void main(String[] args){
@@ -21,9 +23,15 @@ public class Main {
         elements.add( new Atom("B",2,1,3));
         elements.add( new Atom("Br",2,2,1));
 
-        Map map = new Map(4);
+        Map map = new Map(5);
 
-        MapHelper mapHelper = new MapHelper(elements,map);
+        Lock[][] locks = new Lock[5][5];
+        for (int i = 0; i < 5; i++)
+            for (int j = 0; j < 5; j++) {
+                locks[i][j] = new ReentrantLock();
+            }
+
+        MapHelper mapHelper = new MapHelper(elements,map,locks);
 
         for (int i=0; i<13; i++) {
             map.addEntry(( (elements.get(i))));
@@ -37,7 +45,7 @@ public class Main {
         }
 
         for (int i=0; i<13; i++) {
-            t[i].start();
+        t[i].start();
         }
 
         try {
@@ -49,6 +57,5 @@ public class Main {
         }
         System.out.println("Elements on map after reactions:");
         map.printMap();
-
     }
 }
