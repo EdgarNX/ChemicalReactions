@@ -4,24 +4,25 @@ import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MapHelper {
+public final class MapHelper {
     private static List<Element> elements;
     private static Map map;
     private static MapHelper single_instance = null;
-
-
     private static Lock[][] mapLocker;
+    private static Lock elementsLocker;
 
-    private MapHelper(List<Element> elements, Map map, Lock[][] mapLocker) {
+    private MapHelper(List<Element> elements, Map map, Lock[][] mapLocker, Lock elementsLocker) {
         MapHelper.elements = elements;
         MapHelper.map = map;
-        this.mapLocker = mapLocker;
+        MapHelper.mapLocker = mapLocker;
+        MapHelper.elementsLocker = elementsLocker;
     }
 
-    public static MapHelper getInstance(List<Element> elements, Map map, Lock[][] mapLocker)
+    public static MapHelper getInstance(List<Element> elements, Map map, Lock[][] mapLocker, Lock elementsLocker)
     {
-        if (single_instance == null)
-            single_instance = new MapHelper(elements,map,mapLocker);
+        if (single_instance == null) {
+            single_instance = new MapHelper(elements,map,mapLocker,elementsLocker);
+        }
 
         return single_instance;
     }
@@ -32,11 +33,6 @@ public class MapHelper {
             result = true;
         return result;
     }
-
-
-
-
-
 
     public static void operate(Element element) {
         int oldPositionX = element.getPositionX();
@@ -50,18 +46,17 @@ public class MapHelper {
 
         if (elementVerifier(element)) {
 
-            if (mapLocker[newpositionX][newpositionY].tryLock() && mapLocker[element.getPositionX()][element.getPositionY()].tryLock()) {
+            if (mapLocker[newpositionX][newpositionY].tryLock() && mapLocker[element.getPositionX()][element.getPositionY()].tryLock() && elementsLocker.tryLock()) {
 
                 try {
                     if (!map.verifyIfSlotIsFree(newpositionX, newpositionY)) {
                         if (element instanceof Atom) {
-                            while (elementsIterator.hasNext()) {
-                                Element e = elementsIterator.next();
+                            for (Element e : elements) {
                                 if (e.getPositionX() == newpositionX && e.getPositionY() == newpositionY && !(e.getName().equals(element.getName()))) {
                                     if (e instanceof Atom) {
                                         if (((Atom) element).getValence() + ((Atom) e).getValence() == 8) {
                                             Molecule newMolecule = new Molecule(((Atom) element), ((Atom) e), e.getPositionX(), e.getPositionY());
-                                            elementsIterator.remove();
+                                            elements.remove(e);
                                             elements.remove(element);
                                             elements.add(newMolecule);
                                             map.slotSetter("_", element.getPositionX(), element.getPositionY());
@@ -83,6 +78,7 @@ public class MapHelper {
                 } finally {
                     mapLocker[newpositionX][newpositionY].unlock();
                     mapLocker[oldPositionX][oldPositionY].unlock();
+                    elementsLocker.unlock();
                 }
             }
         }
