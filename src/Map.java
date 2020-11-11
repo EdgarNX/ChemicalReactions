@@ -28,7 +28,7 @@ public class Map {
         return grid[x][y].equals("_");
     }
 
-    public void slotSetter(String value, int x, int y) {
+    public synchronized void slotSetter(String value, int x, int y) {
         grid[x][y] = value;
     }
 
@@ -36,7 +36,7 @@ public class Map {
         return size;
     }
 
-    public void addEntry(Element element) {
+    public synchronized void addEntry(Element element) {
         grid[element.getPositionX()][element.getPositionY()] = element.getName();
     }
 
