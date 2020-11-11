@@ -1,13 +1,12 @@
 import java.util.Random;
 
-public class Atom extends Element implements Runnable{
+public class Atom extends Element {
     private String name;
     private int valence;
 
     public Atom(String name, int positionX, int positionY, int valence) {
+        super(positionX,positionY);
         this.name = name;
-        this.positionX = positionX;
-        this.positionY = positionY;
         this.valence = valence;
     }
 
